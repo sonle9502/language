@@ -201,7 +201,30 @@
         
         <!-- JS sẽ lấy dữ liệu và tạo các thẻ level chèn vào đây -->
         <div id="levels-grid" class="levels-grid">
-          <div class="loading">Đang tải kho đề...</div>
+          <div class="level-card" onclick="handleSelectLevel('N5')">
+            <span class="level-badge">N5</span>
+            <h3>JLPT N5</h3>
+          </div>
+
+          <div class="level-card" onclick="handleSelectLevel('N4')">
+            <span class="level-badge">N4</span>
+            <h3>JLPT N4</h3>
+          </div>
+
+          <div class="level-card" onclick="handleSelectLevel('N3')">
+            <span class="level-badge">N3</span>
+            <h3>JLPT N3</h3>
+          </div>
+
+          <div class="level-card" onclick="handleSelectLevel('N2')">
+            <span class="level-badge">N2</span>
+            <h3>JLPT N2</h3>
+          </div>
+
+          <div class="level-card" onclick="handleSelectLevel('N1')">
+            <span class="level-badge">N1</span>
+            <h3>JLPT N1</h3>
+          </div>
         </div>
 
         <div class="tip-banner">
@@ -388,5 +411,39 @@
     <span>小さな一歩も、大切な一歩。</span>
     <span>Made for Japanese learners</span>
   </footer>
+
+  <!-- POPUP DANH SÁCH ĐỀ THI THEO LEVEL -->
+  <div
+    id="exam-list-modal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="exam-list-title"
+  >
+    <div class="modal-backdrop" onclick="closeExamListModal()"></div>
+
+    <article class="exam-list-card">
+      <button
+        id="close-exam-list"
+        class="modal-close"
+        aria-label="Đóng"
+        onclick="closeExamListModal()"
+      >
+        ×
+      </button>
+
+      <div class="modal-header">
+        <span id="exam-list-level-tag" class="eyebrow">JLPT N3</span>
+        <h2 id="exam-list-title">Danh sách đề thi</h2>
+        <p class="muted">Chọn đề thi bạn muốn luyện tập hôm nay.</p>
+      </div>
+
+      <!-- JS sẽ đổ danh sách các đề thi tương ứng vào đây -->
+      <div id="exam-items-container" class="exam-items-container">
+        <div class="loading">Đang tải danh sách đề...</div>
+      </div>
+    </article>
+  </div>
+  
 </body>
 </html>

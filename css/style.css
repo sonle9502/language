@@ -9,3 +9,69 @@
 .modal{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:20px}.modal-backdrop{position:absolute;inset:0;background:rgba(35,45,40,.43);backdrop-filter:blur(3px)}.dictionary-card{position:relative;background:#fff;width:min(100%,430px);border-radius:17px;padding:30px;box-shadow:0 24px 70px #0002;animation:fadein .18s}.modal-close{position:absolute;right:17px;top:12px;border:0;background:transparent;font-size:27px;color:var(--muted)}.dictionary-card h2{font:38px 'Noto Sans JP';margin:10px 0 0}.dict-reading{font:14px 'Noto Sans JP';color:#9b7b62;margin:2px 0 12px}.dict-meaning{font-size:15px;font-weight:600}.dict-example{margin:20px 0;padding:15px;background:#f6f5ef;border-radius:9px}.dict-example small{font-size:9px;letter-spacing:1.5px;color:var(--green);font-weight:700}.dict-example p{font:14px/1.8 'Noto Sans JP';margin:6px 0}.dict-example p.muted{font:12px 'DM Sans';color:var(--muted)}.toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#33463d;color:#fff;padding:11px 18px;border-radius:9px;font-size:12px;z-index:50;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}footer{border-top:1px solid var(--line);display:flex;justify-content:space-between;padding:23px max(5vw,24px);color:#9aa39b;font-size:10px}footer span:first-child{font-family:'Noto Sans JP';letter-spacing:2px;color:var(--green)}
 @media(max-width:900px){.topbar{gap:15px;padding:0 20px}.main-nav{gap:0}.nav-link{font-size:11px;padding:8px}.auth-layout{gap:35px}.levels-grid{grid-template-columns:repeat(3,1fr)}.exam-layout{grid-template-columns:145px 1fr}.question-nav{padding:12px}.question-jump{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:650px){.topbar{height:auto;min-height:70px;flex-wrap:wrap;padding:12px 16px;gap:8px}.brand{min-width:0;flex:1}.main-nav{order:3;width:100%;overflow:auto;flex-basis:100%}.user-area{font-size:10px}.user-area #user-email{display:none}.auth-layout{display:block;margin:25px auto 50px;padding:0 17px}.auth-intro{padding:15px 5px 25px}.auth-intro h1{font-size:36px}.auth-decoration{margin-top:20px}.auth-card{padding:25px 22px}.auth-decoration span:nth-child(3){display:none}#app-view{padding:30px 16px 55px}.welcome-row h1{font-size:28px}.stamp{width:68px;height:68px;font-size:15px}.stats-grid{gap:8px;margin:25px 0 35px}.stat-card{padding:13px 10px;gap:8px}.stat-icon{width:32px;height:32px;font-size:16px}.stat-card small{font-size:9px}.stat-card strong{font-size:20px}.levels-grid{grid-template-columns:repeat(2,1fr);gap:10px}.level-card{min-height:175px;padding:16px 13px}.level-card .level-number{font-size:32px}.section-heading h2{font-size:19px}.exam-header{align-items:start;gap:10px}.exam-header h1{font-size:25px}.exam-counter{min-width:90px}.exam-layout{display:block}.question-nav{position:static;margin-bottom:16px}.question-jump{grid-template-columns:repeat(8,1fr)}.question-card{padding:19px 16px}.question-text{font-size:17px}.submit-row{align-items:start;gap:15px}.submit-row .btn{white-space:nowrap}.submit-row p{margin:0}.favorite-card{align-items:start;padding:15px}.favorite-main{gap:10px}.favorite-kanji{min-width:48px;font-size:21px}.history-card{gap:10px}.history-score{font-size:19px}.result-hero h1{font-size:26px}.score-display strong{font-size:43px}footer{gap:8px;flex-wrap:wrap}footer span:last-child{display:none}}
+
+
+/* MODAL CHỌN ĐỀ THI */
+.exam-list-card {
+  position: relative;
+  z-index: 1001;
+  width: 100%;
+  max-width: 540px;
+  margin: 16px;
+  padding: 28px;
+  background: var(--bg-paper, #fdfbf7);
+  border: 1px solid var(--border-color, #e2dcd5);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.exam-list-card .modal-header {
+  margin-bottom: 20px;
+}
+
+.exam-list-card .modal-header h2 {
+  margin: 4px 0;
+  font-size: 1.5rem;
+}
+
+.exam-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.exam-card-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid var(--border-color, #e2dcd5);
+  border-radius: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.exam-card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.exam-card-info b {
+  display: block;
+  font-size: 1.05rem;
+  color: var(--text-color, #222);
+  margin-bottom: 4px;
+}
+
+.exam-card-info p {
+  margin: 0 0 6px 0;
+  font-size: 0.875rem;
+}
+
+.exam-card-info small {
+  font-size: 0.75rem;
+}

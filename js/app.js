@@ -35,6 +35,7 @@
   let toastTimer;
   function toast(message) {
     const el = $("toast");
+    if (!el) return;
     el.textContent = message;
     el.classList.add("show");
     clearTimeout(toastTimer);
@@ -43,6 +44,7 @@
 
   function showMessage(message, isError = false) {
     const el = $("auth-message");
+    if (!el) return;
     el.textContent = message;
     el.classList.toggle("error", isError);
   }
@@ -52,7 +54,8 @@
 
     // Ẩn tất cả các trang, chỉ hiện trang được chọn
     ["dashboard", "exam", "result", "favorites", "history"].forEach(p => {
-      $(`${p}-page`).classList.toggle("hidden", p !== pageName);
+      const pageEl = $(`${p}-page`);
+      if (pageEl) pageEl.classList.toggle("hidden", p !== pageName);
     });
 
     // Cập nhật trạng thái Active trên Menu
@@ -136,14 +139,14 @@
     navigate("dashboard");
   }
 
-  // 5. TRANG CHỦ (DASHBOARD) - LẤY DỮ LIỆU & ĐỔ RA CÁC THẺ LEVEL
+  // 5. TRANG CHỦ (DASHBOARD) - HIỂN THỊ CÁC LEVEL
   async function loadDashboard() {
     if (!db) return;
     const grid = $("levels-grid");
+    if (!grid) return;
     grid.innerHTML = '<div class="loading">Đang tải kho đề...</div>';
 
     try {
-      // Lấy dữ liệu từ Database
       const [{ data: exams }, { data: results }, { data: favs }] = await Promise.all([
         db.from("jlpt_exams").select("id,level,title,description,question_count").order("level"),
         db.from("jlpt_results").select("score,exam_id"),
@@ -153,32 +156,33 @@
       state.exams = exams || [];
 
       // Cập nhật Thống kê
-      $("stat-exams").textContent = (results || []).length;
-      $("stat-average").textContent = results?.length ? Math.round(results.reduce((s, r) => s + r.score, 0) / results.length) + "%" : "—";
-      $("stat-favorites").textContent = (favs || []).length;
+      if ($("stat-exams")) $("stat-exams").textContent = (results || []).length;
+      if ($("stat-average")) $("stat-average").textContent = results?.length ? Math.round(results.reduce((s, r) => s + r.score, 0) / results.length) + "%" : "—";
+      if ($("stat-favorites")) $("stat-favorites").textContent = (favs || []).length;
 
       // Đổ danh sách cấp độ ra giao diện
       grid.innerHTML = "";
 
       levels.forEach(item => {
-        const exam = state.exams.find(e => e.level === item.level);
+        const levelExams = state.exams.filter(e => e.level === item.level);
+        const examCount = levelExams.length;
 
         const card = document.createElement("button");
         card.className = "level-card";
-        if (!exam) card.disabled = true;
 
         card.innerHTML = `
           <div class="level-number">${item.level}</div>
           <h3>${item.jp} · ${item.level}</h3>
           <p>${item.vi}</p>
           <div class="card-bottom">
-            <span>${exam ? `${exam.question_count} câu · 1 đề mẫu` : "Chưa có đề"}</span>
+            <span>${examCount > 0 ? `${examCount} đề thi có sẵn` : "Chưa có đề"}</span>
             <span class="card-arrow">↗</span>
           </div>
         `;
 
+        // Bấm chọn Level để mở Modal danh sách các đề
         card.onclick = () => {
-          if (exam) startExam(exam.id);
+          handleSelectLevel(item.level);
         };
 
         grid.appendChild(card);
@@ -189,10 +193,75 @@
     }
   }
 
-  // 6. TRANG LÀM BÀI (EXAM)
+  // 6. XỬ LÝ MỞ MODAL & DANH SÁCH ĐỀ THI TƯƠNG ỨNG VỚI LEVEL
+  async function handleSelectLevel(levelName) {
+    if (!db) return;
+
+    const modal = $("exam-list-modal");
+    const levelTag = $("exam-list-level-tag");
+    const container = $("exam-items-container");
+
+    if (!modal || !container) {
+      toast("Chưa bổ sung Modal danh sách đề vào HTML!");
+      return;
+    }
+
+    if (levelTag) levelTag.textContent = `JLPT ${levelName}`;
+    container.innerHTML = '<div class="loading">Đang tải danh sách đề...</div>';
+    modal.classList.remove("hidden");
+
+    try {
+      const { data: exams, error } = await db
+        .from("jlpt_exams")
+        .select("*")
+        .eq("level", levelName)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      if (!exams || exams.length === 0) {
+        container.innerHTML = '<p class="empty-state">Chưa có đề thi nào cho cấp độ này.</p>';
+        return;
+      }
+
+      container.innerHTML = exams.map(exam => `
+        <div class="exam-card-item">
+          <div class="exam-card-info">
+            <b>${exam.title}</b>
+            <p class="muted">${exam.description || 'Đề thi tổng hợp kiến thức ' + levelName}</p>
+            <small class="muted">${exam.question_count || 0} câu hỏi</small>
+          </div>
+          <button class="btn btn-primary" onclick="handleOpenExam('${exam.id}')">
+            Làm bài →
+          </button>
+        </div>
+      `).join('');
+
+    } catch (err) {
+      console.error("Lỗi khi tải đề thi:", err);
+      container.innerHTML = `<p class="empty-state">Không thể tải danh sách đề thi: ${err.message}</p>`;
+    }
+  }
+
+  function closeExamListModal() {
+    const modal = $("exam-list-modal");
+    if (modal) modal.classList.add("hidden");
+  }
+
+  function handleOpenExam(examId) {
+    closeExamListModal();
+    startExam(examId);
+  }
+
+  // 7. TRANG LÀM BÀI (EXAM)
   async function startExam(examId) {
     try {
-      const exam = state.exams.find(e => e.id === examId);
+      // Tìm trong state hoặc truy vấn DB nếu chưa có
+      let exam = state.exams.find(e => e.id === examId);
+      if (!exam && db) {
+        const { data } = await db.from("jlpt_exams").select("*").eq("id", examId).single();
+        exam = data;
+      }
       if (!exam) throw new Error("Không tìm thấy đề thi.");
 
       const { data: questions, error } = await db.from("jlpt_questions").select("*").eq("exam_id", examId).order("order_no");
@@ -284,9 +353,10 @@
       }
     });
 
+    const unanswered = total - count;
     $("submit-hint").textContent = count === total 
       ? "Bạn đã trả lời tất cả câu hỏi. Hãy nộp bài khi sẵn sàng." 
-      : `Còn ${total - count} câu chưa chọn đáp án.`;
+      : `Còn ${unanswered} câu chưa chọn đáp án.`;
   }
 
   async function submitExam() {
@@ -345,7 +415,7 @@
     });
   }
 
-  // 7. TRANG TỪ YÊU THÍCH (FAVORITES)
+  // 8. TRANG TỪ YÊU THÍCH (FAVORITES)
   async function loadFavorites() {
     if (!db) return;
     const listEl = $("favorites-list");
@@ -406,7 +476,7 @@
     });
   }
 
-  // 8. TRANG LỊCH SỬ HỌC TẬP (HISTORY)
+  // 9. TRANG LỊCH SỬ HỌC TẬP (HISTORY)
   async function loadHistory() {
     if (!db) return;
     const listEl = $("history-list");
@@ -444,7 +514,7 @@
     }
   }
 
-  // 9. TRA TỪ ĐIỂN TỪ SUPABASE (DOUBLE CLICK)
+  // 10. TRA TỪ ĐIỂN TỪ SUPABASE (DOUBLE CLICK)
   async function handleDoubleClick(event) {
     if (event.target.closest("input, button, label, .dictionary-card")) return;
 
@@ -453,8 +523,7 @@
 
     if (!db) return;
 
-    // Tìm kiếm từ vựng trên bảng jlpt_dictionary của Supabase
-    const { data, error } = await db.from("jlpt_dictionary")
+    const { data } = await db.from("jlpt_dictionary")
       .select("*")
       .ilike("word", `%${selectedText}%`)
       .limit(1)
@@ -508,7 +577,7 @@
     }
   }
 
-  // 10. GÁN SỰ KIỆN TOÀN CỤC BẰNG WINDOW
+  // 11. GÁN SỰ KIỆN TOÀN CỤC BẰNG WINDOW
   window.navigateTo = navigate;
   window.switchAuthTab = setAuthMode;
   window.handleLogout = logout;
@@ -525,12 +594,20 @@
   window.handleSearchFavorites = (query) => renderFavorites(query);
   window.handleTextDoubleClick = handleDoubleClick;
 
+  // Gán thêm các hàm quản lý Modal chọn đề
+  window.handleSelectLevel = handleSelectLevel;
+  window.closeExamListModal = closeExamListModal;
+  window.handleOpenExam = handleOpenExam;
+
   // Keydown Escape để đóng Modal
   document.addEventListener("keydown", e => {
-    if (e.key === "Escape") $("dictionary-modal").classList.add("hidden");
+    if (e.key === "Escape") {
+      $("dictionary-modal")?.classList.add("hidden");
+      closeExamListModal();
+    }
   });
 
-  // 11. KHỞI CHẠY ỨNG DỤNG
+  // 12. KHỞI CHẠY ỨNG DỤNG
   async function init() {
     if (!db) {
       $("auth-view").classList.remove("hidden");
