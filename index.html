@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ことば日和 | JLPT Learning</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="js/config.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+
+<body ondblclick="handleTextDoubleClick(event)">
+  <div class="paper-texture"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Kotoba Biyori home" onclick="event.preventDefault(); navigateTo('dashboard');">
+      <span class="brand-mark">言</span>
+      <span>
+        <b>ことば日和</b>
+        <small>JLPT LEARNING</small>
+      </span>
+    </a>
+
+    <nav id="main-nav" class="main-nav hidden">
+      <button class="nav-link active" data-page="dashboard" onclick="navigateTo('dashboard')">
+        ホーム
+      </button>
+      <button class="nav-link" data-page="favorites" onclick="navigateTo('favorites')">
+        お気に入り · Từ yêu thích
+      </button>
+      <button class="nav-link" data-page="history" onclick="navigateTo('history')">
+        学習履歴 · Lịch sử
+      </button>
+    </nav>
+
+    <div id="user-area" class="user-area hidden">
+      <span id="user-email"></span>
+      <button id="logout-btn" class="btn btn-quiet" onclick="event.preventDefault(); handleLogout();">
+        Đăng xuất
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- KHU VỰC ĐĂNG NHẬP / ĐĂNG KÝ -->
+    <section id="auth-view" class="auth-layout">
+      <div class="auth-intro">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          YOUR JAPANESE STUDY SPACE
+        </div>
+
+        <h1>
+          一歩ずつ、<br>
+          <em>日本語を。</em>
+        </h1>
+
+        <p class="lead">
+          Mỗi ngày một chút tiếng Nhật.<br>
+          Học từ vựng, luyện đề và tiến gần hơn đến JLPT.
+        </p>
+
+        <div class="paper-note">
+          <span class="note-icon">文</span>
+          <div>
+            <b>Đọc · Hiểu · Ghi nhớ</b>
+            <p>
+              Tra nghĩa ngay trong câu hỏi bằng cách double-click
+              vào từ tiếng Nhật.
+            </p>
+          </div>
+        </div>
+
+        <div class="auth-decoration">
+          <span>桜</span>
+          <span>日本語</span>
+          <span>学習ノート</span>
+        </div>
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button id="tab-login" class="auth-tab selected" onclick="switchAuthTab('login')">
+            Đăng nhập
+          </button>
+          <button id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">
+            Tạo tài khoản
+          </button>
+        </div>
+
+        <h2 id="auth-title">Chào mừng trở lại</h2>
+        <p id="auth-subtitle" class="muted">
+          Đăng nhập để tiếp tục hành trình học tiếng Nhật.
+        </p>
+
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+          <label>
+            Email
+            <input
+              id="auth-email"
+              type="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              required
+            >
+          </label>
+
+          <label>
+            Mật khẩu
+            <input
+              id="auth-password"
+              type="password"
+              autocomplete="current-password"
+              minlength="8"
+              placeholder="Ít nhất 8 ký tự"
+              required
+            >
+          </label>
+
+          <button
+            id="auth-submit"
+            class="btn btn-primary full-width"
+            type="submit"
+          >
+            Đăng nhập <span>→</span>
+          </button>
+        </form>
+
+        <p
+          id="auth-message"
+          class="status-message"
+          aria-live="polite"
+        ></p>
+
+        <p class="fine-print">
+          Tài khoản được xác thực bởi Supabase Auth.
+          Không dùng mật khẩu thật của tài khoản khác.
+        </p>
+      </div>
+    </section>
+
+    <!-- KHU VỰC CHÍNH CỦA ỨNG DỤNG -->
+    <section id="app-view" class="hidden">
+      <!-- 1. TRANG CHỦ (DASHBOARD) -->
+      <section id="dashboard-page" class="page">
+        <div class="welcome-row">
+          <div>
+            <div class="eyebrow">あなたの学習スペース</div>
+            <h1>
+              こんにちは！<br>
+              <em>Hôm nay mình học gì?</em>
+            </h1>
+            <p class="muted">
+              Chọn cấp độ và bắt đầu luyện tập theo nhịp độ của bạn.
+            </p>
+          </div>
+
+          <div class="stamp">
+            日本語<br>
+            <small>STUDY LOG</small>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span class="stat-icon">勉</span>
+            <div>
+              <small>Đề đã hoàn thành</small>
+              <strong id="stat-exams">0</strong>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-icon">点</span>
+            <div>
+              <small>Điểm trung bình</small>
+              <strong id="stat-average">—</strong>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-icon">♡</span>
+            <div>
+              <small>Từ yêu thích</small>
+              <strong id="stat-favorites">0</strong>
+            </div>
+          </article>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CHOOSE YOUR LEVEL</span>
+            <h2>Chọn cấp độ JLPT</h2>
+          </div>
+          <span class="heading-aside">N5 → N1</span>
+        </div>
+        
+        <!-- JS sẽ lấy dữ liệu và tạo các thẻ level chèn vào đây -->
+        <div id="levels-grid" class="levels-grid">
+          <div class="loading">Đang tải kho đề...</div>
+        </div>
+
+        <div class="tip-banner">
+          <span class="tip-symbol">あ</span>
+          <div>
+            <b>Mẹo học nhỏ hôm nay</b>
+            <p>
+              Đừng chỉ nhớ nghĩa của từ. Hãy đọc cả câu ví dụ
+              để hiểu cách dùng từ trong ngữ cảnh.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. TRANG LÀM ĐỀ (EXAM) -->
+      <section id="exam-page" class="page hidden">
+        <div class="exam-topline">
+          <button id="back-dashboard" class="back-link" onclick="navigateTo('dashboard')">
+            ← Quay lại kho đề
+          </button>
+          <span id="exam-level-chip" class="level-chip">JLPT N3</span>
+        </div>
+
+        <div class="exam-header">
+          <div>
+            <div class="eyebrow">PRACTICE TEST</div>
+            <h1 id="exam-title">Đề luyện tập</h1>
+            <p id="exam-description" class="muted">
+              Chọn một đáp án cho mỗi câu hỏi.
+            </p>
+          </div>
+
+          <div class="exam-counter">
+            <strong id="answered-count">0</strong>
+            <span>
+              / <span id="total-count">0</span> câu đã chọn
+            </span>
+          </div>
+        </div>
+
+        <div class="progress-track">
+          <div id="exam-progress" class="progress-fill"></div>
+        </div>
+
+        <div class="exam-layout">
+          <aside class="question-nav">
+            <b>Danh sách câu</b>
+            <!-- JS sẽ tự đổ các nút số câu hỏi vào đây -->
+            <div id="question-jump" class="question-jump"></div>
+
+            <div class="nav-legend">
+              <span class="legend-dot done"></span>
+              Đã chọn
+              <span class="legend-dot"></span>
+              Chưa chọn
+            </div>
+          </aside>
+
+          <!-- JS sẽ tự đổ danh sách câu hỏi vào đây -->
+          <div id="questions-container" class="questions-container"></div>
+        </div>
+
+        <div class="submit-row">
+          <p id="submit-hint" class="muted">
+            Bạn có thể kiểm tra lại câu trả lời trước khi nộp.
+          </p>
+          <button id="submit-exam" class="btn btn-primary" onclick="handleSubmitExam()">
+            Nộp bài <span>→</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 3. TRANG KẾT QUẢ (RESULT) -->
+      <section id="result-page" class="page hidden">
+        <button id="result-back" class="back-link" onclick="navigateTo('dashboard')">
+          ← Về trang chủ
+        </button>
+
+        <div class="result-hero">
+          <div class="result-seal">結果</div>
+          <div class="eyebrow">YOUR PRACTICE RESULT</div>
+          <h1 id="result-heading">Hoàn thành tốt!</h1>
+          <p id="result-subtitle" class="muted">
+            Cùng xem lại những câu hỏi vừa làm nhé.
+          </p>
+
+          <div class="score-display">
+            <strong id="result-score">0%</strong>
+            <span id="result-fraction">0 / 0 câu đúng</span>
+          </div>
+        </div>
+
+        <!-- JS sẽ đổ chi tiết câu đúng/sai vào đây -->
+        <div id="result-details" class="result-details"></div>
+
+        <button id="result-home-bottom" class="btn btn-primary" onclick="navigateTo('dashboard')">
+          Làm đề khác <span>→</span>
+        </button>
+      </section>
+
+      <!-- 4. TRANG TỪ YÊU THÍCH (FAVORITES) -->
+      <section id="favorites-page" class="page hidden">
+        <div class="eyebrow">MY VOCABULARY NOTEBOOK</div>
+        <h1><em>お気に入り</em> · Từ yêu thích</h1>
+        <p class="muted">
+          Những từ bạn đã lưu trong lúc luyện đề.
+        </p>
+
+        <div class="search-row">
+          <input
+            id="favorite-search"
+            type="search"
+            placeholder="Tìm từ, cách đọc hoặc nghĩa..."
+            oninput="handleSearchFavorites(this.value)"
+          >
+          <span id="favorite-count" class="muted"></span>
+        </div>
+
+        <!-- JS sẽ đổ các thẻ từ vựng vào đây -->
+        <div id="favorites-list" class="favorites-list"></div>
+      </section>
+
+      <!-- 5. TRANG LỊCH SỬ (HISTORY) -->
+      <section id="history-page" class="page hidden">
+        <div class="eyebrow">YOUR STUDY JOURNAL</div>
+        <h1><em>学習履歴</em> · Lịch sử học tập</h1>
+        <p class="muted">
+          Theo dõi tiến bộ của bạn qua từng lần luyện đề.
+        </p>
+
+        <!-- JS sẽ đổ danh sách lịch sử làm bài vào đây -->
+        <div id="history-list" class="history-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <!-- POPUP TỪ ĐIỂN TRA TỪ -->
+  <div
+    id="dictionary-modal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dict-word"
+  >
+    <div class="modal-backdrop" onclick="closeDictionary()"></div>
+
+    <article class="dictionary-card">
+      <button
+        id="close-dictionary"
+        class="modal-close"
+        aria-label="Đóng"
+        onclick="closeDictionary()"
+      >
+        ×
+      </button>
+
+      <span class="eyebrow">TỪ VỰNG TRONG NGỮ CẢNH</span>
+      <h2 id="dict-word">言葉</h2>
+      <p id="dict-reading" class="dict-reading"></p>
+      <p id="dict-meaning" class="dict-meaning"></p>
+
+      <div class="dict-example">
+        <small>VÍ DỤ</small>
+        <p id="dict-example-jp"></p>
+        <p id="dict-example-vi" class="muted"></p>
+      </div>
+
+      <button
+        id="save-word-btn"
+        class="btn btn-secondary full-width"
+        onclick="saveDictionaryWord()"
+      >
+        ♡ Thêm vào yêu thích
+      </button>
+
+      <p id="dict-message" class="status-message"></p>
+    </article>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <footer>
+    <span>ことば日和</span>
+    <span>小さな一歩も、大切な一歩。</span>
+    <span>Made for Japanese learners</span>
+  </footer>
+</body>
+</html>
