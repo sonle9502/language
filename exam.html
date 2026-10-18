@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Làm bài thi JLPT</title>
   
-  <!-- Nhúng CSS đã tách -->
   <link rel="stylesheet" href="css/exam.css">
-  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -22,17 +20,18 @@
       </div>
     </header>
 
-    <main id="questions-container"></main>
-
+    <!-- Đưa khối Sidebar lên trước để ưu tiên hiển thị trên điện thoại -->
     <aside class="sidebar">
       <h3>Danh sách câu hỏi</h3>
       <div id="question-jump" class="jump-grid"></div>
       <p id="submit-hint"></p>
       <button id="btn-submit" class="btn-submit" onclick="submitExam()">Nộp bài</button>
     </aside>
+
+    <!-- Khối danh sách câu hỏi chính -->
+    <main id="questions-container"></main>
   </div>
 
-  <!-- Lưu ý sửa đúng đường dẫn tới thư mục chứa file JS của bạn -->
   <script src="js/config.js"></script>
   <script src="js/exam.js"></script>
 </body>
