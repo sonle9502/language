@@ -1,0 +1,238 @@
+/* js/result.css */
+* {
+  box-sizing: border-box;
+}
+
+body.result-body {
+  background-color: #f4f6f9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 30px 15px;
+  color: #2c3e50;
+}
+
+.result-container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.result-header {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  margin-bottom: 25px;
+}
+
+.badge-level {
+  display: inline-block;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.result-exam-title {
+  font-size: 24px;
+  margin: 12px 0 6px 0;
+  color: #1e293b;
+}
+
+.result-feedback {
+  color: #64748b;
+  font-size: 15px;
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+/* KHU VỰC THỐNG KÊ ĐIỂM SỐ */
+.score-board {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  padding: 20px 0;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.score-circle-box {
+  flex-shrink: 0;
+}
+
+.score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #4f46e5;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 16px rgba(79, 70, 229, 0.25);
+}
+
+.score-circle #result-score {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.score-circle small {
+  font-size: 11px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+/* LƯỚI THỐNG KÊ 4 Ô */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  min-width: 260px;
+}
+
+.stat-card {
+  padding: 12px 18px;
+  border-radius: 12px;
+  text-align: left;
+  background: #f8fafc;
+}
+
+.stat-card .stat-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.stat-card .stat-label {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.stat-card.correct { background: #ecfdf5; }
+.stat-card.correct .stat-value { color: #10b981; }
+
+.stat-card.incorrect { background: #fef2f2; }
+.stat-card.incorrect .stat-value { color: #ef4444; }
+
+.stat-card.skipped { background: #fffbeb; }
+.stat-card.skipped .stat-value { color: #f59e0b; }
+
+.stat-card.total { background: #f1f5f9; }
+.stat-card.total .stat-value { color: #475569; }
+
+/* NÚT THAO TÁC */
+.action-bar {
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+/* DANH SÁCH CÂU HOẢI CHI TIẾT */
+.section-title {
+  font-size: 18px;
+  color: #1e293b;
+  margin-bottom: 16px;
+}
+
+.result-card-item {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-left: 5px solid #cbd5e1;
+}
+
+.result-card-item.status-correct {
+  border-left-color: #10b981;
+}
+
+.result-card-item.status-incorrect {
+  border-left-color: #ef4444;
+}
+
+.result-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.q-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.status-correct .q-badge { background: #d1fae5; color: #047857; }
+.status-incorrect .q-badge { background: #fee2e2; color: #b91c1c; }
+
+.q-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.answers-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+
+.ans-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ans-label {
+  color: #64748b;
+  min-width: 90px;
+}
+
+.ans-value {
+  font-weight: 600;
+}
+
+.ans-value.text-correct { color: #10b981; }
+.ans-value.text-incorrect { color: #ef4444; }
+
+.explanation-box {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: #f0f9ff;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #0369a1;
+  line-height: 1.4;
+}

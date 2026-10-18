@@ -248,9 +248,15 @@
     if (modal) modal.classList.add("hidden");
   }
 
+  // function handleOpenExam(examId) {
+  //   closeExamListModal();
+  //   startExam(examId);
+  // }
+
   function handleOpenExam(examId) {
     closeExamListModal();
-    startExam(examId);
+    // Mở trang exam.html truyền kèm query param ?id=...
+    window.open(`exam.html?id=${examId}`, '_blank');
   }
 
   // 7. TRANG LÀM BÀI (EXAM)

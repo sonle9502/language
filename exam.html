@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Làm bài thi JLPT</title>
+  
+  <!-- Nhúng CSS đã tách -->
+  <link rel="stylesheet" href="css/exam.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span id="exam-level-chip" class="chip">JLPT</span>
+      <h1 id="exam-title">Đang tải...</h1>
+      <p id="exam-description"></p>
+      <div>
+        Đã làm: <strong id="answered-count">0</strong>/<span id="total-count">0</span> câu
+        <div class="progress-bar"><div id="exam-progress" class="progress-fill"></div></div>
+      </div>
+    </header>
+
+    <main id="questions-container"></main>
+
+    <aside class="sidebar">
+      <h3>Danh sách câu hỏi</h3>
+      <div id="question-jump" class="jump-grid"></div>
+      <p id="submit-hint"></p>
+      <button id="btn-submit" class="btn-submit" onclick="submitExam()">Nộp bài</button>
+    </aside>
+  </div>
+
+  <!-- Lưu ý sửa đúng đường dẫn tới thư mục chứa file JS của bạn -->
+  <script src="js/config.js"></script>
+  <script src="js/exam.js"></script>
+</body>
+</html>

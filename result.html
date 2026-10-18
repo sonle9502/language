@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kết Quả Bài Thi JLPT</title>
+  
+  <!-- Đường dẫn tới CSS -->
+  <link rel="stylesheet" href="css/result.css">
+</head>
+<body class="result-body">
+  <div class="result-container">
+    
+    <!-- HEADER KẾT QUẢ -->
+    <header class="result-header">
+      <span id="result-level" class="badge-level">JLPT N3</span>
+      <h1 id="result-title" class="result-exam-title">Đang tải kết quả...</h1>
+      <p id="result-heading" class="result-feedback">Làm tốt lắm!</p>
+
+      <!-- KHU VỰC ĐIỂM SỐ & THỐNG KÊ -->
+      <div class="score-board">
+        <div class="score-circle-box">
+          <div class="score-circle">
+            <span id="result-score">0%</span>
+            <small>Tổng điểm</small>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card correct">
+            <div class="stat-value" id="stat-correct">0</div>
+            <div class="stat-label">Câu đúng</div>
+          </div>
+          <div class="stat-card incorrect">
+            <div class="stat-value" id="stat-incorrect">0</div>
+            <div class="stat-label">Câu sai</div>
+          </div>
+          <div class="stat-card skipped">
+            <div class="stat-value" id="stat-skipped">0</div>
+            <div class="stat-label">Chưa làm</div>
+          </div>
+          <div class="stat-card total">
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Tổng số câu</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <button class="btn btn-secondary" onclick="window.close()">Đóng cửa sổ</button>
+      </div>
+    </header>
+
+    <!-- DANH SÁCH CHI TIẾT TỪNG CÂU HOẢI -->
+    <main class="result-detail-section">
+      <h2 class="section-title">Chi tiết lời giải</h2>
+      <div id="result-details" class="details-list"></div>
+    </main>
+
+  </div>
+
+  <script src="js/result.js"></script>
+</body>
+</html>
